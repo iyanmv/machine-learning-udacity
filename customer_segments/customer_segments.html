@@ -11804,7 +11804,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[93]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
@@ -11845,7 +11845,7 @@ Scikit: 0.19.1
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[94]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Import libraries necessary for this project</span>
@@ -11903,7 +11903,7 @@ Scikit: 0.19.1
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[95]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Display a description of the dataset</span>
@@ -12046,7 +12046,7 @@ Scikit: 0.19.1
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[96]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># TODO: Select three indices of your choice you wish to sample from the dataset</span>
@@ -12180,6 +12180,7 @@ Scikit: 0.19.1
 <p>First sample spends about 46% more than the average in fresh products and about 40% more in delicatessen products while it spends less in the rest of the categories, specially in frozen products where the spending is about a third of the average. This makes me think that this establishment is a healthy restaurant where most of the food is prepared using fresh products.</p>
 <p>Second sample doubles the spending in Fresh products and spends less in the rest of categories, specially in detergents and paper products where the spending is seven times less the average. This makes me think that this establishment is not a restaurant but a market of mainly fresh products.</p>
 <p>Third sample spends over three times in frozen products than the average and even less than the second sample in detergent and paper products. It spends almost nothing in delicatessen products. For this reason I think this establishment is a delivery of fast food.</p>
+<p><strong>Note from first review:</strong> As we see later, the features' distribution is highly right-skewed, therefore, the median would probably serve as a better reference than mean. In fact, I would recommend comparing to the quartiles to get a better idea of the nature of the establishments represented.</p>
 
 </div>
 </div>
@@ -12205,7 +12206,7 @@ Scikit: 0.19.1
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[97]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
@@ -12271,6 +12272,55 @@ Scikit: 0.19.1
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
 <p>I tried to predict <code>Frozen</code> feature. The reported prediction score by a Regressor DT was 0.25. As it is mentioned in the hint, the $R^2$ is scored between 0 and 1, so we are getting a low coefficient. This means that this feature <strong>is indeed relevant</strong> for identifying customers' spending habits since the information is not inferable from the other features.</p>
+<p><strong>Note from first review:</strong> Your choice of random states can have a huge influence on the R^2-score obtained, which could, in turn, have an influence on your interpretation of the relevance of a feature. To mitigate this, you can average the prediction scores over many iterations, say 100, without setting any of the random states.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[98]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">scores</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">var_dropped</span> <span class="o">=</span> <span class="s1">&#39;Frozen&#39;</span>
+    <span class="n">new_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">var_dropped</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">new_data</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">var_dropped</span><span class="p">],</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+    <span class="n">regressor</span> <span class="o">=</span> <span class="n">DecisionTreeRegressor</span><span class="p">()</span>
+    <span class="n">regressor</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">regressor</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">scores</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>-1.37712830578
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Score 0.25 was obtained when setting <code>random_state</code> to 0 in both <code>train_test_split</code> and <code>DecisionTreeRegressor</code> functions. When we iterate this without setting the seed we get -1.00 (in this case, everytime is different). According to the <a href="The best possible score is 1.0 and it can be negative (because the model can be arbitrarily worse">documentation</a>: <em>The best possible score is 1.0 and it can be negative (because the model can be arbitrarily worse)</em> so it wasn't true that the value is between 0 and 1. But the conclusion doesn't change: the feature is relevant for identifying customers' spending habits.</p>
 
 </div>
 </div>
@@ -12286,7 +12336,7 @@ Scikit: 0.19.1
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[99]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Produce a scatter matrix for each pair of features in the data</span>
@@ -14079,7 +14129,7 @@ IKSJ6m9n+AAAAABJRU5ErkJggg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[100]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
@@ -14099,7 +14149,7 @@ IKSJ6m9n+AAAAABJRU5ErkJggg==
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[15]:</div>
+<div class="prompt output_prompt">Out[100]:</div>
 
 
 
@@ -14418,7 +14468,7 @@ Ax7X4zRydbiPAAAAAElFTkSuQmCC
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[101]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
@@ -14695,9 +14745,10 @@ BPX/A67QRcgEd0sNAAAAAElFTkSuQmCC
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
-<p>Most of the data points for all features seem to be close to 0. Data looks to be normally distributed although the features may have different slopes. To check this we would need to use another scale or "zoom" in a specific region. All features have outliers. We can see this if we notice the long tails in the distribution plots but it is shown better in the box plot, where circles represent data points beyond the third quartile plus 1.5 times the separation of the third and first quartiles.</p>
+<p>Most of the data points for all features seem to be close to 0. <del>Data looks to be normally distributed although the features may have different slopes. To check this we would need to use another scale or "zoom" in a specific region.</del> Features are not normally distributed. Normal or Gaussian distributions are symmetric and in all these distributions we see that right tails are longer, i.e. distributions are right-skewed.  All features have outliers. We can see this if we notice the long tails in the distribution plots but it is shown better in the box plot, where circles represent data points beyond the third quartile plus 1.5 times the separation of the third and first quartiles.</p>
 <p><code>Grocery</code> and <code>Detergent_Paper</code> features seem to exhibit some degree of correlation. We can see how data for these two features are linearly distributed. Same happens to <code>Milk</code> and <code>Detergent_Paper</code> although it looks less clear. Regarding <code>Frozen</code>, there is no clear correlation with other features, so this agrees with my previous answer.</p>
 <p>Computing the correlation matrix and plotting the values in a heatmap, we can confirm this conclusions and also notice other pair of correlated features: <code>Milk</code> and <code>Grocery</code>.</p>
+<p><strong>Note from first review:</strong> Clustering algorithms discussed in this project work under the assumption that the data features are (roughly) normally distributed. Significant deviation from zero skewness indicates that we must apply some kind of normalisation to make the features normally distributed.</p>
 
 </div>
 </div>
@@ -14727,7 +14778,7 @@ BPX/A67QRcgEd0sNAAAAAElFTkSuQmCC
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[102]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># TODO: Scale the data using the natural logarithm</span>
@@ -18827,7 +18878,7 @@ QmCC
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[103]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Display the log-transformed sample data</span>
@@ -18934,7 +18985,7 @@ Once you have performed this implementation, the dataset will be stored in the v
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[104]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">outliers</span>  <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([])</span>
@@ -19838,6 +19889,7 @@ Once you have performed this implementation, the dataset will be stored in the v
 <p><strong>Answer:</strong></p>
 <p>154, 65, 75, 66, 128 samples are considered outliers in more than one feature. For example, sample 154 is an outlier in <code>Milk</code>, <code>Grocery</code> and <code>Delicatessen</code> features. These data points should be removed. If a data point is an outlier for a features, it should be removed so if it is an oulier in more than one feature more reason to drop it.</p>
 <p>I added all the points that were beyond 1.5*IQC to the outliers <del>list</del> pandas.Index in order to removed them. This data points may affect the performance of many models. For example, k-means is affected by outliers: the centroids of the clusters may be translated in the direction of the outliers or even worse, perhaps we get a centroid between a real cluster and the ouliers.</p>
+<p><strong>Note from first review:</strong> However, removing all the Tukey outliers, even those for only one feature, effectively removes 10% of samples from our dataset, which is generally not recommended without a strong justification. Taking this into consideration, one might choose to remove only the outliers for more than one features, or increase the step size to identify the more extreme outliers.</p>
 
 </div>
 </div>
@@ -19867,7 +19919,7 @@ Once you have performed this implementation, the dataset will be stored in the v
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[105]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">PCA</span>
@@ -20231,15 +20283,59 @@ IiIiEoM6TCIiIiIiIjGowyQiIiIiIhKDOkwiIiIiIiIx/D9bctzZ4xBNvwAAAABJRU5ErkJggg==
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[106]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">pca_results</span><span class="p">[</span><span class="s1">&#39;Explained Variance&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">())</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Dimension 1    0.4993
+Dimension 2    0.7252
+Dimension 3    0.8301
+Dimension 4    0.9279
+Dimension 5    0.9767
+Dimension 6    1.0000
+Name: Explained Variance, dtype: float64
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
 <p>72.5% of the variance in the data is explained by the first and second principal component. 92.8% of the variance by the four principal components.</p>
-<p>First dimension would represent a "standard" restaurant. <code>Detergents_Paper</code>, <code>Grocery</code> and <code>Milk</code> are the most important features in this dimensions.</p>
-<p>Second dimensions would represent a delivery or a market. Less important feature is <code>Detergents_Paper</code> because less money is spent in that category in this type of establishment, while the most important ones are <code>Frozen</code>, <code>Fresh</code> and <code>Delicatessen</code>.</p>
-<p>Note: I don't understand the hint and the last questions.</p>
+<p><del>First dimension would represent a "standard" restaurant. <code>Detergents_Paper</code>, <code>Grocery</code> and <code>Milk</code> are the most important features in this dimensions.</del></p>
+<p><del>Second dimensions would represent a delivery or a market. Less important feature is <code>Detergents_Paper</code> because less money is spent in that category in this type of establishment, while the most important ones are <code>Frozen</code>, <code>Fresh</code> and <code>Delicatessen</code>.</del></p>
+<p><del>Note: I don't understand the hint and the last questions.</del></p>
+<p>Principal components (dimensions) are directions in the feature space that best explain the variance of the data. <code>Detergent_Paper</code>, <code>Grocery</code> and <code>Milk</code> features are well represented by the first dimension. An increase in this direction means spending more in this three categories.</p>
+<p><code>Frozen</code>, <code>Fresh</code> and <code>Delicatessen</code> are well representated in the second component. Again, an increase in the direction of the second dimension means spending more in this type of products.</p>
+<p>Third dimension is mainly represented by <code>Fresh</code> and <code>Delicatessen</code> features. But in this case, <code>Fresh</code> has a negative weight and <code>Delicatessen</code> a positive one. This means that if we increase in the direction of the third dimension, the spending in fresh products will decrease while the spending in <code>Delicatessen</code> will increase.</p>
+<p>Finally, <code>Frozen</code> and <code>Delicatessen</code> are well represented in the fourth dimension. Taking into account the signs of the weights, an increase in this direction of the feature space will turn into an increase in delicatessen products and a decrease in frozen products.</p>
+<p><strong>Interesting links from first review:</strong></p>
+<p><a href="http://setosa.io/ev/principal-component-analysis/">http://setosa.io/ev/principal-component-analysis/</a></p>
+<p><a href="https://stats.stackexchange.com/questions/88880/does-the-sign-of-scores-or-of-loadings-in-pca-or-fa-have-a-meaning-may-i-revers">https://stats.stackexchange.com/questions/88880/does-the-sign-of-scores-or-of-loadings-in-pca-or-fa-have-a-meaning-may-i-revers</a></p>
 
 </div>
 </div>
@@ -20255,7 +20351,7 @@ IiIiEoM6TCIiIiIiIjGowyQiIiIiIhKDOkwiIiIiIiIx/D9bctzZ4xBNvwAAAABJRU5ErkJggg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="prompt input_prompt">In&nbsp;[107]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Display sample log-data after having a PCA transformation applied</span>
@@ -20359,7 +20455,7 @@ IiIiEoM6TCIiIiIiIjGowyQiIiIiIhKDOkwiIiIiIiIx/D9bctzZ4xBNvwAAAABJRU5ErkJggg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[108]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># TODO: Apply PCA by fitting the good data with only two dimensions</span>
@@ -20391,7 +20487,7 @@ IiIiEoM6TCIiIiIiIjGowyQiIiIiIhKDOkwiIiIiIiIx/D9bctzZ4xBNvwAAAABJRU5ErkJggg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="prompt input_prompt">In&nbsp;[109]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Display sample log-data after applying PCA transformation in two dimensions</span>
@@ -20474,7 +20570,7 @@ IiIiEoM6TCIiIiIiIjGowyQiIiIiIhKDOkwiIiIiIiIx/D9bctzZ4xBNvwAAAABJRU5ErkJggg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="prompt input_prompt">In&nbsp;[110]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Create a biplot</span>
@@ -21555,6 +21651,13 @@ AMRCQAkAAAAAiIWAEgAAAAAQCwElAAAAACCW/w/kNGxRD8HUPgAAAABJRU5ErkJggg==
 <p><strong>Answer:</strong></p>
 <p>K-means is faster than Gaussian Mixture Model (GMM) but GMM gives us the possibility of having multiple clusters associated to a data point (soft clustering) along with a probability or certainty.</p>
 <p>With this data I would use GMM because some establishments may be in the frontier between different clusters and GMM would give us the probability, a quantity that may be useful in some cases.</p>
+<p><strong>Note from first review:</strong> From a practical standpoint, the main criteria for deciding between these two algorithms are the speed v/s second order information (confidence levels) desired and the underlying structure of our data.</p>
+<p><strong>Interesting links from first review:</strong></p>
+<p><a href="http://home.deib.polimi.it/matteucc/Clustering/tutorial_html/mixture.html">http://home.deib.polimi.it/matteucc/Clustering/tutorial_html/mixture.html</a></p>
+<p><a href="http://www.improvedoutcomes.com/docs/WebSiteDocs/Clustering/K-Means_Clustering_Overview.htm">http://www.improvedoutcomes.com/docs/WebSiteDocs/Clustering/K-Means_Clustering_Overview.htm</a></p>
+<p><a href="https://stats.stackexchange.com/questions/133656/how-to-understand-the-drawbacks-of-k-means">https://stats.stackexchange.com/questions/133656/how-to-understand-the-drawbacks-of-k-means</a></p>
+<p><a href="https://www.r-bloggers.com/k-means-clustering-is-not-a-free-lunch/">https://www.r-bloggers.com/k-means-clustering-is-not-a-free-lunch/</a></p>
+<p><a href="https://www.r-bloggers.com/pca-and-k-means-clustering-of-delta-aircraft/">https://www.r-bloggers.com/pca-and-k-means-clustering-of-delta-aircraft/</a></p>
 
 </div>
 </div>
@@ -21581,7 +21684,7 @@ AMRCQAkAAAAAiIWAEgAAAAAQCwElAAAAACCW/w/kNGxRD8HUPgAAAABJRU5ErkJggg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[43]:</div>
+<div class="prompt input_prompt">In&nbsp;[111]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.mixture</span> <span class="kn">import</span> <span class="n">GaussianMixture</span>
@@ -21679,9 +21782,54 @@ Silhouette score for 6 clusters: 0.338
 </tbody>
 </table>
 <p>Best score is obtained with two clusters.</p>
+<p><strong>Note from first review</strong>: This is one place where your choice of outliers plays a huge role. For example, repeat the analysis without removing any outlier. What is the optimal number of clusters that you get?</p>
+<p>From sklearn documentation, the Silhouette Coefficient is calculated using the mean intra-cluster distance and the mean nearest-cluster distance for each sample. Therefore, it makes sense to use the same distance metric here as the one used in the clustering algorithm. This is Euclidean for KMeans (default metric for Silhouette score) and Mahalanobis for general GMM.</p>
+<p>For GMM, BIC could sometimes be a better criterion for deciding on the optimal number of clusters, since it takes into account the probability information provided by GMM. I leave you to experiment with this.</p>
 
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[91]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">reduced_data</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">log_data</span><span class="p">)</span>
+<span class="n">reduced_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">reduced_data</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Dimension 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Dimension 2&#39;</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">n_cluster</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">):</span>
+    <span class="n">clusterer</span> <span class="o">=</span> <span class="n">GaussianMixture</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="n">n_cluster</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">reduced_data</span><span class="p">)</span>
+    <span class="n">preds</span> <span class="o">=</span> <span class="n">clusterer</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">reduced_data</span><span class="p">)</span>
+    <span class="n">centers</span> <span class="o">=</span> <span class="n">clusterer</span><span class="o">.</span><span class="n">means_</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="n">silhouette_score</span><span class="p">(</span><span class="n">reduced_data</span><span class="p">,</span> <span class="n">preds</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Silhouette score for </span><span class="si">%i</span><span class="s1"> clusters: </span><span class="si">%.3f</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="n">n_cluster</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Silhouette score for 2 clusters: 0.410
+Silhouette score for 3 clusters: 0.402
+Silhouette score for 4 clusters: 0.312
+Silhouette score for 5 clusters: 0.276
+Silhouette score for 6 clusters: 0.301
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
@@ -21694,7 +21842,7 @@ Silhouette score for 6 clusters: 0.338
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[50]:</div>
+<div class="prompt input_prompt">In&nbsp;[112]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">clusterer</span> <span class="o">=</span> <span class="n">GaussianMixture</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">reduced_data</span><span class="p">)</span>
@@ -21711,7 +21859,7 @@ Silhouette score for 6 clusters: 0.338
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[51]:</div>
+<div class="prompt input_prompt">In&nbsp;[113]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Display the results of the clustering from implementation</span>
@@ -22354,7 +22502,7 @@ gQCaim0AAAAASUVORK5CYII=
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[52]:</div>
+<div class="prompt input_prompt">In&nbsp;[114]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># TODO: Inverse transform the centers</span>
@@ -22443,7 +22591,7 @@ gQCaim0AAAAASUVORK5CYII=
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[53]:</div>
+<div class="prompt input_prompt">In&nbsp;[115]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
@@ -22459,7 +22607,7 @@ gQCaim0AAAAASUVORK5CYII=
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[53]:</div>
+<div class="prompt output_prompt">Out[115]:</div>
 
 
 
@@ -22612,7 +22760,7 @@ gQCaim0AAAAASUVORK5CYII=
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[54]:</div>
+<div class="prompt input_prompt">In&nbsp;[116]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Display the predictions</span>
@@ -22647,10 +22795,11 @@ Sample point 2 predicted to be in Cluster 0
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[55]:</div>
+<div class="prompt input_prompt">In&nbsp;[118]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">true_centers</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -22729,6 +22878,65 @@ Sample point 2 predicted to be in Cluster 0
 
 </div>
 
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Fresh</th>
+      <th>Milk</th>
+      <th>Grocery</th>
+      <th>Frozen</th>
+      <th>Detergents_Paper</th>
+      <th>Delicatessen</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Segment 0</th>
+      <td>9494.0</td>
+      <td>2049.0</td>
+      <td>2598.0</td>
+      <td>2203.0</td>
+      <td>337.0</td>
+      <td>796.0</td>
+    </tr>
+    <tr>
+      <th>Segment 1</th>
+      <td>5219.0</td>
+      <td>7671.0</td>
+      <td>11403.0</td>
+      <td>1079.0</td>
+      <td>4413.0</td>
+      <td>1099.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -22738,7 +22946,10 @@ Sample point 2 predicted to be in Cluster 0
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
-<p>First sample point is best represented by Segment 1 and second and third by Segment 0. Obviously, there are differences between sample two and three but this clustering just gives a very high level differentiation. We could have tried to separate into more clusters and probably these samples would be all of them in different clusters.</p>
+<p><del>First sample point is best represented by Segment 1 and second and third by Segment 0. Obviously, there are differences between sample two and three but this clustering just gives a very high level differentiation. We could have tried to separate into more clusters and probably these samples would be all of them in different clusters.</del></p>
+<p>Before running the code for displaying the predictions we can have a look at the value of the features for the three samples and the means of the GMM model for the two clusters.</p>
+<p>First sample is closer to segment 0 in <code>Fresh</code>, <code>Milk</code> and <code>Grocery</code> features and closer to segment 1 in <code>Frozen</code>, <code>Detergents_Paper</code> and <code>Delicatessen</code>. It the case of the frozen products, it is almost on the mean of the centroid center but the rest of the features is not quite clear. This is a difficult example to decide by looking at these values. If we look at the 2D plot with the two clusters we can notice that it is almost in the frontier between the two clusters and that's why is difficult to choose one cluster. Second sample is clearer. All values are closer to the centroid of the segment 0. There is no doubt that this sample belongs to cluster 0. Third sample is less clear than than second but there is no doubt as in the first one. It belongs to cluster 0 checking again to which centroid is closer.</p>
+<p>By running the code we can check that first sample belongs to segment 1. As I mentioned this sample was difficult to get right by intuition because is in the frontier between the two clusters. A small variation in the values of some features could easily move this sample to the other segment.</p>
 
 </div>
 </div>
@@ -22780,6 +22991,11 @@ Sample point 2 predicted to be in Cluster 0
 <p><strong>Answer:</strong></p>
 <p>I don't think any customer segment would react positively. Segment 0 spends a lot in <code>Fresh</code>, so a change from 5 days a week to 3 days a week in the delivery service could affect the quality of these products. And segment 1 spends more in the rest of the family products (except <code>Frozen</code>) so perhaps 3 deliverys per week is not enough for them.</p>
 <p>The problem with the <code>Fresh</code> products is unsolvable so segment 0 wouldn't reac positively. However, segment 1 may react positively if the savings of going from 5 to 3 deliverys are considerable. The should rethink and perhaps make some changes in their organization but at the end they could react positively.</p>
+<p><strong>Update after first review:</strong></p>
+<p>In order to determine which group of customers this change affects the most, we can run A/B tests using the information from the clustering model. We could select a small number of customers from segment 0 and other small number of customers from segment 1 and change them the delivery service from 5 days a week to 3 days a week. Comparing with the rest of the customers from their cluster, we can get useful feedback if they react positively to the change. Moreover, since we run two A/B tests in the two clusters, we can also compare and see which cluster of customers would react better.</p>
+<p><strong>Interesting links from first review:</strong></p>
+<p><a href="https://medium.com/netflix-techblog/its-all-a-bout-testing-the-netflix-experimentation-platform-4e1ca458c15">https://medium.com/netflix-techblog/its-all-a-bout-testing-the-netflix-experimentation-platform-4e1ca458c15</a></p>
+<p><a href="https://stats.stackexchange.com/questions/192752/clustering-and-a-b-testing">https://stats.stackexchange.com/questions/192752/clustering-and-a-b-testing</a></p>
 
 </div>
 </div>
